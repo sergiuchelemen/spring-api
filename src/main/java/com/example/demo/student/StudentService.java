@@ -1,48 +1,38 @@
 package com.example.demo.student;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
-import org.springframework.web.bind.annotation.GetMapping;
-
-import java.time.LocalDate;
-import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class StudentService {
-    public ArrayList<Student> studentsList = new ArrayList<>();
 
-
-    public void addStudent(Student student){
-        studentsList.add(student);
+    private final StudentRepository studentRepository;
+    @Autowired
+    public StudentService(StudentRepository studentRepository){
+        this.studentRepository = studentRepository;
     }
 
-
-    public List<Student> getStudents(){
-        return studentsList;
+    public List<Student> getStudents() {
+        return studentRepository.findAll();
     }
 
-    public ResponseEntity<String> editStudent(long id, Student student) {
-        for (Student s : studentsList) {
-            if (s.getId() == id) {
-                s.setName(student.getName());
-                s.setAge(student.getAge());
-                s.setDateOfBirth(student.getDateOfBirth());
-                return ResponseEntity.ok("Student modified successfully!");
-            }
+    public void addStudent(Student student) {
+        Optional<Student> studentOptional = studentRepository.findStudentByEmail(student.getEmail());
+        if(studentOptional.isPresent()){
+            throw new IllegalStateException("Email already exists.");
         }
-        return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Student not found!");
+        studentRepository.save(student);
     }
 
-    public ResponseEntity<String> deleteStudent(long id){
-        for (Student s : studentsList) {
-            if (s.getId() == id) {
-                studentsList.remove(s);
-                return ResponseEntity.ok("Student deleted successfully!");
-            }
+    public void deleteStudent(long id){
+        boolean studentExists = studentRepository.existsById(id);
+        if(!studentExists){
+            throw new IllegalStateException("Student doesn't exist.");
         }
-        return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Student not found!");
+        studentRepository.deleteById(id);
     }
 }
