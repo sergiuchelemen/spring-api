@@ -1,8 +1,6 @@
 package com.example.demo.student;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
@@ -17,7 +15,7 @@ public class StudentController {
     }
 
     @GetMapping
-    public List<Student> getStudents(){
+    public List<StudentDTO> getStudents(){
         return studentService.getStudents();
     }
 
@@ -27,8 +25,12 @@ public class StudentController {
     }
 
     @DeleteMapping(path = "{studentId}")
-    public void deleteStudent(@PathVariable("studentId") long studentId){
+    public void deleteStudent(@PathVariable("studentId") long studentId) {
         studentService.deleteStudent(studentId);
     }
 
+    @PutMapping(path = "{studentId}")
+    public void updateStudent(@PathVariable("studentId") long studentId, @RequestBody NameEmail requestBody){
+        studentService.updateStudent(studentId, requestBody.getName(), requestBody.getEmail());
+    }
 }

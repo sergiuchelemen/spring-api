@@ -22,22 +22,25 @@ public class Student {
     private long id;
     private String name;
     private String email;
+    private String password;
 
     private LocalDate birthDate;
     @Transient
     private int age;
 
     public Student() {}
-    public Student(long id, String name, String email, LocalDate birthDate) {
+    public Student(long id, String name, String email, LocalDate birthDate, String password) {
         this.id = id;
         this.name = name;
         this.email = email;
+        this.password = password;
         this.birthDate = birthDate;
     }
 
-    public Student(String name, String email, LocalDate birthDate) {
+    public Student(String name, String email, String password, LocalDate birthDate) {
         this.name = name;
         this.email = email;
+        this.password = password;
         this.birthDate = birthDate;
     }
 
@@ -47,6 +50,14 @@ public class Student {
 
     public String getName() {
         return name;
+    }
+
+    public String getPassword() {
+        return password;
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
     }
 
     public String getEmail(){
